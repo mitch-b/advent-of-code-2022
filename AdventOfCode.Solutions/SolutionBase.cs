@@ -86,14 +86,17 @@ public abstract class SolutionBase
     {
         var inputFilepath =
             $"Year{Year}/Day{Day:D2}/{(debug ? "debug" : "input")}";
-        inputFilepath = Path.Combine(Directory.GetCurrentDirectory(), inputFilepath);
+        var existingFilepath = Path.Combine(Directory.GetCurrentDirectory(), inputFilepath);
 
-        if (File.Exists(inputFilepath) && new FileInfo(inputFilepath).Length > 0)
+        if (File.Exists(existingFilepath) && new FileInfo(existingFilepath).Length > 0)
         {
-            return File.ReadAllText(inputFilepath);
+            return File.ReadAllText(existingFilepath);
         }
 
         if (debug) return "";
+
+        // upward traverse: 'bin/debug/net7.0/'
+        inputFilepath = Path.Combine("../../../AdventOfCode.Solutions", inputFilepath);
 
         try
         {
