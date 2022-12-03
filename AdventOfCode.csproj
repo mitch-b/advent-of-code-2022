@@ -21,4 +21,9 @@
     <ProjectReference Include="AdventOfCode.Solutions\AdventOfCode.Solutions.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
