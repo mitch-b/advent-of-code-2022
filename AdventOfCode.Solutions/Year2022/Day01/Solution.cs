@@ -14,7 +14,7 @@ class Solution : SolutionBase
 
     protected override string SolvePartOne()
     {
-        return Elves.First().sumOfCalories.ToString();
+        return Elves.Take(1).Sum(e => e.sumOfCalories).ToString();
     }
 
     protected override string SolvePartTwo()
