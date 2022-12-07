@@ -17,4 +17,14 @@ public static class RegexUtils
         }
         return extractedData;
     }
+    public static IEnumerable<T> ExtractMatchesFromString<T>(this string str, string regexPattern)
+    {
+        var matches = Regex.Matches(str, regexPattern);
+        var extractedData = new List<T>();
+        foreach (var match in matches)
+        {
+            extractedData.Add(match.ToString().ConvertTo<T>());
+        }
+        return extractedData;
+    }
 }
