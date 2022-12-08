@@ -5,7 +5,7 @@ namespace AdventOfCode.Solutions.Utils;
 
 public static class RegexUtils
 {
-    public static IEnumerable<T> ExtractFromString<T>(this string str, string regexPattern, bool ignoreFirstCaptureGroup = true)
+    public static IList<T> ExtractFromString<T>(this string str, string regexPattern, bool ignoreFirstCaptureGroup = true)
     {
         var matches = Regex.Match(str, regexPattern);
         var extractedData = new List<T>();
@@ -17,7 +17,7 @@ public static class RegexUtils
         }
         return extractedData;
     }
-    public static IEnumerable<T> ExtractMatchesFromString<T>(this string str, string regexPattern)
+    public static IList<T> ExtractMatchesFromString<T>(this string str, string regexPattern)
     {
         var matches = Regex.Matches(str, regexPattern);
         var extractedData = new List<T>();
