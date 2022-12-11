@@ -12,13 +12,6 @@ class Solution : SolutionBase
     private void Setup()
     {
         _tree = new Node<long>(0, "");
-    }
-
-    private Node<long> _tree = new Node<long>(0, "");
-
-    protected override string SolvePartOne()
-    {
-        Setup();
 
         var lines = Input.SplitByNewline().Skip(1).ToArray(); // skip '$ cd /'
         var currentNodePath = "";
@@ -58,24 +51,61 @@ class Solution : SolutionBase
             activeNode.Children.Add(new Node<long>(fileSize, fileName));
         }
 
-        // now I have my Node<long> built out!
-
-        return "";
+        _ = UpdateDirectorySizes(_tree);
     }
 
-    // to-do .. thinking what i'm doing with this.
-    private long GetNodeTotalSize(Node<long> node, long totalSize = 0)
+    private Node<long> _tree = new Node<long>(0, "");
+
+    protected override string SolvePartOne()
     {
-        foreach (var child in node.Children)
-        {
-            totalSize += child.Value;
-            if (child.Children.Any()) totalSize += GetNodeTotalSize(child);
-        }
-        return totalSize;
+        Setup();
+
+        var valueCount = GetDirectorySizesUnderLimit(_tree);
+        return valueCount.ToString();
     }
 
     protected override string SolvePartTwo()
     {
-        return "";
+        var totalDiskSpace = 70000000;
+        var neededDiskSpace = 30000000;
+        var usedDiskSpace = _tree.Value;
+        var availableDiskSpace = totalDiskSpace - usedDiskSpace;
+        var needToDeleteAtLeast = neededDiskSpace - availableDiskSpace;
+        var directories = GetDirectoriesOverLimit(_tree, needToDeleteAtLeast);
+        return directories.Min(d => d.Value).ToString();
+    }
+
+    private long UpdateDirectorySizes(Node<long> node)
+    {
+        var nodeValue = node.Value;
+        foreach (var child in node.Children)
+        {
+            if (child.Children.Count > 0) UpdateDirectorySizes(child);
+        }
+        if (node.Children.Count > 0) nodeValue = node.Children.Sum(n => n.Value);
+        node.Value = nodeValue;
+        return node.Value;
+    }
+
+    private long GetDirectorySizesUnderLimit(Node<long> node)
+    {
+        var foundValue = node.Value <= 100000 ? node.Value : 0;
+        foreach (var child in node.Children)
+        {
+            if (child.Children.Any()) foundValue += GetDirectorySizesUnderLimit(child);
+        }
+        return foundValue;
+    }
+
+    private List<Node<long>> GetDirectoriesOverLimit(Node<long> node, long limit)
+    {
+        if (node.Children.Count == 0) return new List<Node<long>>();
+        var nodes = new List<Node<long>>();
+        if (node.Value >= limit && node.Children.Count > 0) nodes.Add(node);
+        foreach (var child in node.Children)
+        {
+            if (child.Children.Any()) nodes.AddRange(GetDirectoriesOverLimit(child, limit));
+        }
+        return nodes;
     }
 }
